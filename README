@@ -1,0 +1,14 @@
+#####################################################################
+#                                                                   #
+#                   AIO Root and Recovery                           #
+#                                                                   #
+#####################################################################
+
+Windows drivers are included and are in Drivers.
+
+To use on Windows run the .bat file in cmd.
+
+To use on Linux run the .sh in console.
+
+To use on a Intel based Mac run the .sh in console.
+
