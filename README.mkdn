@@ -6,9 +6,13 @@
 
 Windows drivers are included and are in Drivers.
 
-To use on Windows run the .bat file in cmd.
+To use on Windows double click on the Root_n_Recovery.bat.
 
 To use on Linux run the .sh in console.
 
+ $./Root_n_Recovery.sh
+
 To use on a Intel based Mac run the .sh in console.
+
+ $./Root_n_Recovery.sh
 
