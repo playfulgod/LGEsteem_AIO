@@ -2,12 +2,12 @@
 #################################################
 ### Based off the AIO Indulge by DRockstar    
 #################################################
-
+ver="v1.0"
 dev="PlayfulGod and mtmichaelson"
 cwmver="5.0.2.8"
 rzver="2.1.4-esteem"
-phone="LG Esteem MS910"
-title="All in One Root and Recovery for the $phone" 
+phone="LG Esteem and Revolution"
+title="All in One Root and Recovery $ver for the $phone" 
 menu1="Root Phone"
 menu2="Root and Install Clockworkmod Recovery $cwmver"
 menu3="Root and Install RZ Recovery $rzver"
@@ -44,8 +44,8 @@ checkswversion
 clear
 MENU_CHOICE=""
 echo "================================================================================"
-echo "            All in One Root and Recovery for the LG Esteem MS910 by             "
-echo "========================= PlayfulGod and mtmichaelson =========================="
+echo "  $title by             "
+echo "========================= $dev =========================="
 echo "Make sure that USB Debugging is enabled, all drivers are installed, and that usb"
 echo "                  Internet Connection is selected in usb mode                   "
 echo "================================= Disclaimer ==================================="
