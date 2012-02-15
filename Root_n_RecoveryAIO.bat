@@ -1,5 +1,9 @@
 @ECHO OFF
 color 3
+:CHECKMODEL
+CLS
+:CHECKSWVERSION
+CLS
 :MENU
 CLS
 echo.
@@ -372,7 +376,43 @@ echo Recovery!!!
 pause
 GOTO MENU
 
+:CHECKMODEL
+echo Checking Current Phone Build...
+FOR /F "tokens=*" %%i in ('adb shell getprop ro.product.device') do SET model=%%i
+echo.
+echo Phone Model is Detected as %model%
+echo.
+IF "%model%"=="MS910" (
+	set sdir=VS910
+	goto :eof
+)
+IF "%model%"=="VS910" (
+	set sdir=VS910
+	goto :eof
+)
+echo.
+echo THIS SCRIPT IS FOR LG ESTEEM and REVOLUTION
+echo MODELS MS910 AND VS910 ONLY
+echo SCRIPT WILL NOW ABORT
+adb kill-server
+pause
+exit
 
+:CHECKSWVERSION
+echo Checking Software Version...
+FOR /F "tokens=*" %%i in (adb shell getprop ro.build.version.incremental') do SET swver=%%i
+echo.
+echo Software Version is Detected as %swver%
+echo.
+IF "%swver% == "ZVC.421C2767" 
+echo THIS ONLY WORKS WITH ZVB
+echo.
+echo THIS WILL NOT WORK WITH ZVC
+echo.
+echo SCRIPT WILL NOW ABORT!
+adb kill-server
+pause
+exit
 
 :BYE
 cls
