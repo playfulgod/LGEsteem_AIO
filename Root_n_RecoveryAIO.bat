@@ -120,7 +120,7 @@ echo Device found
 
 echo Pushing Zergrush
 Files\adb push Files\zergrush /data/local/tmp/zergrush
-Files\adb push Files\cwmrecovery.img /data/local/tmp/cwmrecovery.img
+Files\adb push Files\%sdir%\cwmrecovery.img /data/local/tmp/cwmrecovery.img
 Files\adb shell "chmod 755 /data/local/tmp/zergrush"
 
 echo Running Zergrush
@@ -187,7 +187,7 @@ echo Device found
 
 echo Pushing Zergrush
 Files\adb push Files\zergrush /data/local/tmp/zergrush
-Files\adb push Files\rzrecovery.img /data/local/tmp/rzrecovery.img
+Files\adb push Files\%sdir%\rzrecovery.img /data/local/tmp/rzrecovery.img
 Files\adb shell "chmod 755 /data/local/tmp/zergrush"
 
 echo Running Zergrush
@@ -293,7 +293,7 @@ echo Device found
 
 echo Pushing Zergrush
 Files\adb push Files\zergrush /data/local/tmp/zergrush
-Files\adb push Files\stockrecovery.img /data/local/tmp/stockrecovery.img
+Files\adb push Files\%sdir%\stockrecovery.img /data/local/tmp/stockrecovery.img
 Files\adb shell "chmod 755 /data/local/tmp/zergrush"
 
 echo Running Zergrush
@@ -331,7 +331,7 @@ echo Device found
 
 echo Pushing Zergrush
 Files\adb push Files\zergrush /data/local/tmp/zergrush
-Files\adb push Files\stockrecovery.img /data/local/tmp/stockrecovery.img
+Files\adb push Files\%sdir%\stockrecovery.img /data/local/tmp/stockrecovery.img
 Files\adb shell "chmod 755 /data/local/tmp/zergrush"
 
 echo Running Zergrush
