@@ -17,7 +17,7 @@ menu5="Install stock recovery"
 menu6="Unroot and install stock recovery"
 menu7="Reboot Phone"
 menu8="Reboot to Recovery"
-menu9="Exit"
+menu9="One Click Root and Recovery Tool $ver"
 
 # Unix OS Sniffer and Files/$adb setup by Firon
 platform=`uname`;
@@ -376,8 +376,6 @@ echo UnRooting
 
 killserver
 startserver
-#sudo Files/$adb kill-server
-#sudo Files/$adb start-server
 
 echo Device found
 
@@ -413,13 +411,11 @@ end
 function bye {
 header "$menu9" 
 killserver
-echo One Click Root and Recovery Tool
-echo ========By: mtmichaelson ========
+echo ========By: $dev ========
 echo
-echo ____-Shell Script by PlayfulGod-_____
-echo
-echo Based off the Indulge AIO by DRockstar
-echo
+echo ================= Other Credits ================
+echo $cred
+echo ================================================
 echo
 echo Hope you enjoyed! If you would like to 
 echo donate, follow the link in our signatures!
