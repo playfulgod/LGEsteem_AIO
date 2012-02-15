@@ -4,6 +4,7 @@
 #################################################
 ver="v1.0"
 dev="PlayfulGod and mtmichaelson"
+cred="DRockstar, koush, Raidzero, thecubed, and firon"
 cwmver="5.0.2.8"
 rzver="2.1.4-esteem"
 phone="LG Esteem and Revolution"
@@ -52,7 +53,7 @@ echo "================================= Disclaimer =============================
 echo " I am not responsible for anything that may or may not happen to your phone. By "
 echo "           selecting any choice you are accepting your own fate!!!!!!           "
 echo "================================ Other credits ================================="
-echo "                DRockstar, koush, Raidzero, thecubed, and firon.                "
+echo "                $cred.                "
 echo "================================================================================"
 echo
 echo "MENU:";
