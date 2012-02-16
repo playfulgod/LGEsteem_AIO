@@ -5,7 +5,7 @@
 ver="v1.2"
 dev="PlayfulGod and mtmichaelson"
 cred="@djrbliss, DRockstar, koush, Raidzero, thecubed, and firon"
-cwmver="5.0.2.7"
+cwmver="5.5.0.4"
 rzver="2.1.4-esteem"
 phone="LG Esteem and Revolution"
 title="All in One Root and Recovery $ver for the $phone" 
