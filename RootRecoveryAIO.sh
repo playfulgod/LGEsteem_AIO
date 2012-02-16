@@ -2,38 +2,43 @@
 #################################################
 ### Based off the AIO Indulge by DRockstar    
 #################################################
-ver="v1.0"
+ver="v1.2"
 dev="PlayfulGod and mtmichaelson"
-cred="DRockstar, koush, Raidzero, thecubed, and firon"
-cwmver="5.0.2.8"
+cred="@djrbliss, DRockstar, koush, Raidzero, thecubed, and firon"
+cwmver="5.0.2.7"
 rzver="2.1.4-esteem"
 phone="LG Esteem and Revolution"
 title="All in One Root and Recovery $ver for the $phone" 
 menu1="Root Phone"
 menu2="Root and Install Clockworkmod Recovery $cwmver"
-menu3="Root and Install RZ Recovery $rzver"
+menu3="Root and Install RZ Recovery $rzver (Esteem ONLY!!)"
 menu4="Unroot Phone"
 menu5="Install stock recovery"
 menu6="Unroot and install stock recovery"
 menu7="Reboot Phone"
 menu8="Reboot to Recovery"
-menu9="One Click Root and Recovery Tool $ver"
+menu9="Exit"
 
 # Unix OS Sniffer and Files/$adb setup by Firon
-platform=`uname`;
-adb="adb";
-if [ $(uname -p) == 'powerpc' ]; then
-	echo "Sorry, this won't work on PowerPC machines."
-exit 1
+platform=`uname`
+if [ $(uname -p) = 'powerpc' ]; then
+        echo "[-] PowerPC is not supported."
+        exit 1
 fi
-cd "$(dirname "$0")"
-if [ -z $(which adb) ]; then
-	adb="./adb";
-	if [ "$platform" == 'Darwin' ]; then
-		mv adb.osx Files/$adb > /dev/null 2>&1
-	fi
+
+if [ "$platform" = 'Darwin' ]; then
+        adb="Files/./adb.osx"
+        version="OSX"
+else
+        adb="Files/./adb"
+        version="Linux"
 fi
-chmod +x Files/$adb
+chmod +x $adb
+
+which adb > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+        adb="adb"
+fi
 # End section, thanks Firon!
 
 function menu {
@@ -41,7 +46,6 @@ clear
 startserver
 clear
 checkmodel
-checkswversion
 clear
 MENU_CHOICE=""
 echo "================================================================================"
@@ -89,55 +93,64 @@ esac
 function root {
 header "$menu1" 
 clear
-echo Rooting the $phone
-echo 
-echo Exploit Built by the Revolutionary Team
-echo
+echo "[*] LG Esteem root script v2 ($version version)"
+echo "[*] Copyright (c) 2012 Dan Rosenberg (@djrbliss)"
+echo "[*]"
+echo "[*] Re-roots the patched LG Esteem"
+echo "[*]"
+echo "[*] Before continuing, ensure USB debugging is enabled and that your"
+echo "[*] phone is connected via USB."
+echo "[*]"
+echo "[*] Press enter to root your phone..."
 
-killserver
-startserver
+read -n 1 -s
 
-echo Device found
+echo "[*]"
 
-echo Pushing Zergrush
-Files/$adb push Files/zergrush /data/local/tmp/zergrush
-Files/$adb shell "chmod 755 /data/local/tmp/zergrush"
+echo "[*] Waiting for device..."
+$adb kill-server
+$adb wait-for-device
 
-echo Running Zergrush
-Files/$adb shell "echo exit | /data/local/tmp/zergrush"
+echo "[*] Device found."
 
-echo Removing Trash and Installing Root Files
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/system /system"
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/data /data"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/etc/install-recovery.sh"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/recovery-from-boot.p"
-Files/$adb shell /data/local/tmp/sh -c "rmdir /system/tmp"
-Files/$adb shell /data/local/tmp/sh -c "mkdir /system/tmp"
-Files/$adb shell /data/local/tmp/sh -c "chmod 777 /system/tmp"
-Files/$adb push Files/su /system/tmp/su
-Files/$adb push Files/busybox /system/tmp/busybox
-Files/$adb push Files/Superuser.apk /system/tmp/Superuser.apk
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/su /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/Superuser.apk /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/busybox /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "chown root /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "chmod 4755 /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "ln -s /system/xbin/su /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "chmod 755 /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "/system/xbin/busybox --install /system/xbin/"
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
-echo Removing Trash
-Files/$adb shell /data/local/tmp/sh -c "rmdir /system/tmp"
-Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
+echo "[*] Rebooting..."
+$adb reboot
+echo "[*] Waiting for reboot..."
+$adb wait-for-device
 
-Files/$adb reboot
+$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+
+echo "[*] Rebooting again..."
+$adb reboot
+echo "[*] Waiting for reboot..."
+$adb wait-for-device
+
+# Install the goods
+echo "[*] Installing root tools... "
+$adb remount
+$adb push su /system/bin/su
+$adb shell "chmod 6755 /system/bin/su"
+$adb shell "ln -s /system/bin/su /system/xbin/su"
+$adb push Files/Superuser.apk /system/app/Superuser.apk
+$adb push Files/busybox /system/xbin/busybox
+$adb shell "chmod 755 /system/xbin/busybox"
+$adb shell "/system/xbin/busybox --install /system/xbin"
+
+# Clean up after ourselves
+echo "[*] Cleaning up..."
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "rm /data/local.prop"
+
+echo "[*] Rebooting one last time..."
+$adb reboot
+
+$adb wait-for-device
+echo "[*] Root complete, enjoy!"
+
+$adb kill-server
 
 echo Finished Rooting!!!
 
@@ -148,67 +161,80 @@ end
 
 function cwmrecovery {
 header "$menu2" 
+echo "[*] LG Esteem root script v2 ($version version)"
+echo "[*] Copyright (c) 2012 Dan Rosenberg (@djrbliss)"
+echo "[*]"
+echo "[*] CWM $cwmver built by $dev"
+echo "[*] CWM Install by PlayfulGod"
+echo "[*] Copyright (c) 2012 PlayfulGod"
+echo "[*]"
+echo "[*] Root the LG Esteem, ZVB or ZVC and Installs CWM $cwmver"
+echo "[*]"
+echo "[*] Before continuing, ensure USB debugging is enabled and that your"
+echo "[*] phone is connected via USB."
+echo "[*]"
+echo "[*] Press enter to root your phone and install CWM..."
+
+read -n 1 -s
+
+echo "[*]"
+
+echo "[*] Waiting for device..."
+Files/$adb kill-server
+Files/$adb wait-for-device
+
+echo "[*] Device found."
+
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "ln -s /data /data/bootlogo/bootlogopid"
+
+echo "[*] Rebooting..."
+Files/$adb reboot
+echo "[*] Waiting for reboot..."
+Files/$adb wait-for-device
+
+Files/$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+
+echo "[*] Rebooting again..."
+Files/$adb reboot
+echo "[*] Waiting for reboot..."
+Files/$adb wait-for-device
+
+# Install the goods
+echo "[*] Installing root tools... "
+Files/$adb remount
+Files/$adb push Files/su /system/bin/su
+Files/$adb shell "chmod 6755 /system/bin/su"
+Files/$adb shell "ln -s /system/bin/su /system/xbin/su"
+Files/$adb push Files/Superuser.apk /system/app/Superuser.apk
+Files/$adb push Files/busybox /system/xbin/busybox
+Files/$adb shell "chmod 755 /system/xbin/busybox"
+Files/$adb shell "/system/xbin/busybox --install /system/xbin"
+
 echo
-echo Root and CWM
-
-killserver
-startserver
-
-
-echo Device found
-
-echo Pushing Zergrush
-Files/$adb push Files/zergrush /data/local/tmp/zergrush
+echo "[*] Pushing CWM to Phone"
+echo
 Files/$adb push Files/$sdir/cwmrecovery.img /data/local/tmp/cwmrecovery.img
-Files/$adb shell "chmod 755 /data/local/tmp/zergrush"
-
-echo Running Zergrush
-Files/$adb shell "echo exit | /data/local/tmp/zergrush"
-
-echo Removing Trash and Installing Root Files
-echo 
-echo If there are any rm errors it just means there was nothing to rm.
 echo
+echo "[*] Installing CWM Recovery"
 echo
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/system /system"
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/data /data"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/etc/install-recovery.sh"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/recovery-from-boot.p"
-Files/$adb shell /data/local/tmp/sh -c "rmdir /system/tmp"
-Files/$adb shell /data/local/tmp/sh -c "mkdir /system/tmp"
-Files/$adb shell /data/local/tmp/sh -c "chmod 777 /system/tmp"
-Files/$adb push Files/su /system/tmp/su
-Files/$adb push Files/busybox /system/tmp/busybox
-Files/$adb push Files/Superuser.apk /system/tmp/Superuser.apk
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/su /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/Superuser.apk /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/busybox /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "chown root /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "chmod 4755 /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "ln -s /system/xbin/su /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "chmod 755 /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "/system/xbin/busybox --install /system/xbin/"
-
-echo
-echo Removing Trash
-Files/$adb shell /data/local/tmp/sh -c "rmdir /system/tmp"
-
-echo
-echo Installing CWM Recovery
-echo
-
-Files/$adb shell /data/local/tmp/sh -c "dd if=/dev/block/mmcblk0p14 of=/sdcard/mmcblk0p14.backup bs=4096"
-Files/$adb shell /data/local/tmp/sh -c "dd if=/data/local/tmp/cwmrecovery.img of=/dev/block/mmcblk0p14 bs=4096"
+Files/$adb shell "dd if=/data/local/tmp/cwmrecovery.img of=/dev/block/mmcblk0p14 bs=4096" 
 Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
-echo Finished Rooting!!!
+# Clean up after ourselves
+echo "[*] Cleaning up..."
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "rm /data/local.prop"
+
+echo "[*] Rebooting one last time..."
+$adb reboot
+
+$adb wait-for-device
+echo "[*] Root complete!!!"
+echo
+echo "[*] Finished Installing Clockworkmod Recovery!!!"
+echo
+echo "[*] Enjoy!"
 Files/$adb reboot
 
 end
@@ -217,66 +243,80 @@ end
 
 function rzrecovery {
 header "$menu3" 
+echo "[*] LG Esteem root script v2 ($version version)"
+echo "[*] Copyright (c) 2012 Dan Rosenberg (@djrbliss)"
+echo "[*]"
+echo "[*] RZR $rzrver built by PlayfulGod"
+echo "[*] RZR Install by PlayfulGod"
+echo "[*] Copyright (c) 2012 PlayfulGod"
+echo "[*]"
+echo "[*] Root the LG Esteem, ZVB or ZVC and Installs RZR $rzrver"
+echo "[*]"
+echo "[*] Before continuing, ensure USB debugging is enabled and that your"
+echo "[*] phone is connected via USB."
+echo "[*]"
+echo "[*] Press enter to root your phone and install CWM..."
+
+read -n 1 -s
+
+echo "[*]"
+
+echo "[*] Waiting for device..."
+Files/$adb kill-server
+Files/$adb wait-for-device
+
+echo "[*] Device found."
+
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "ln -s /data /data/bootlogo/bootlogopid"
+
+echo "[*] Rebooting..."
+Files/$adb reboot
+echo "[*] Waiting for reboot..."
+Files/$adb wait-for-device
+
+Files/$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+
+echo "[*] Rebooting again..."
+Files/$adb reboot
+echo "[*] Waiting for reboot..."
+Files/$adb wait-for-device
+
+# Install the goods
+echo "[*] Installing root tools... "
+Files/$adb remount
+Files/$adb push Files/su /system/bin/su
+Files/$adb shell "chmod 6755 /system/bin/su"
+Files/$adb shell "ln -s /system/bin/su /system/xbin/su"
+Files/$adb push Files/Superuser.apk /system/app/Superuser.apk
+Files/$adb push Files/busybox /system/xbin/busybox
+Files/$adb shell "chmod 755 /system/xbin/busybox"
+Files/$adb shell "/system/xbin/busybox --install /system/xbin"
+
 echo
-echo Root and RZR
-
-killserver
-startserver
-
-echo Device found
-
-echo Pushing Zergrush
-Files/$adb push Files/zergrush /data/local/tmp/zergrush
+echo "[*] Pushing RZR to Phone"
+echo
 Files/$adb push Files/$sdir/rzrecovery.img /data/local/tmp/rzrecovery.img
-Files/$adb shell "chmod 755 /data/local/tmp/zergrush"
-
-echo Running Zergrush
-Files/$adb shell "echo exit | /data/local/tmp/zergrush"
-
-echo Removing Trash and Installing Root Files
-echo 
-echo If there are any rm errors it just means there was nothing to rm.
 echo
+echo "[*] Installing RZR Recovery"
 echo
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/system /system"
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/data /data"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/tmp/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/etc/install-recovery.sh"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/recovery-from-boot.p"
-Files/$adb shell /data/local/tmp/sh -c "rmdir /system/tmp"
-Files/$adb shell /data/local/tmp/sh -c "mkdir /system/tmp"
-Files/$adb shell /data/local/tmp/sh -c "chmod 777 /system/tmp"
-Files/$adb push Files/su /system/tmp/su
-Files/$adb push Files/busybox /system/tmp/busybox
-Files/$adb push Files/Superuser.apk /system/tmp/Superuser.apk
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/su /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/Superuser.apk /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "mv /system/tmp/busybox /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "chown root /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "chmod 4755 /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "ln -s /system/xbin/su /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "chmod 755 /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "/system/xbin/busybox --install /system/xbin/"
-
-echo
-echo Removing Trash
-Files/$adb shell /data/local/tmp/sh -c "rmdir /system/tmp"
-
-echo
-echo Installing CWM Recovery $cwmver
-echo
-
-Files/$adb shell /data/local/tmp/sh -c "dd if=/dev/block/mmcblk0p14 of=/sdcard/mmcblk0p14.backup bs=4096"
-Files/$adb shell /data/local/tmp/sh -c "dd if=/data/local/tmp/rzrecovery.img of=/dev/block/mmcblk0p14 bs=4096"
+Files/$adb shell "dd if=/data/local/tmp/rzrecovery.img of=/dev/block/mmcblk0p14 bs=4096" 
 Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
-echo Finished Rooting!!!
+# Clean up after ourselves
+echo "[*] Cleaning up..."
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "rm /data/local.prop"
+
+echo "[*] Rebooting one last time..."
+$adb reboot
+
+$adb wait-for-device
+echo "[*] Root complete!!!"
+echo
+echo "[*] Finished Installing RZ Recovery!!!"
+echo
+echo "[*] Enjoy!"
 Files/$adb reboot
 
 end
@@ -284,42 +324,63 @@ end
 
 
 
-
 function unroot {
 header "$menu4" 
-echo UnRooting the $phone
-echo Tool Built by $dev
-echo Exploit Built by the Revolutionary Team
+echo "[*] UnRooting the $phone"
+echo "[*]Tool Built by $dev"
 echo
-echo
-echo
-echo UnRooting
+echo "[*] LG Esteem root script v2 ($version version)"
+echo "[*] Copyright (c) 2012 Dan Rosenberg (@djrbliss)"
+echo "[*]"
 
-killserver
-startserver
 
-echo Device found
+echo "[*] Waiting for device..."
+$adb kill-server
+$adb wait-for-device
 
-echo Pushing Zergrush
-Files/$adb push Files/zergrush /data/local/tmp/zergrush
-Files/$adb shell "chmod 755 /data/local/tmp/zergrush"
+echo "[*] Device found."
 
-echo Running Zergrush
-Files/$adb shell "echo exit | /data/local/tmp/zergrush"
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
-echo Removing Trash and UnRooting
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/system /system"
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/data /data"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/bin/busybox"
+echo "[*] Rebooting..."
+$adb reboot
+echo "[*] Waiting for reboot..."
+$adb wait-for-device
+
+$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+
+echo "[*] Rebooting again..."
+$adb reboot
+echo "[*] Waiting for reboot..."
+$adb wait-for-device
+
+# Remove Root Tools
+echo "[*] UnRooting"
+Files/$adb remount
+Files/$adb shell "rm /system/bin/su"
+Files/$adb shell "rm /system/xbin/su"
+Files/$adb shell "rm /system/app/Superuser.apk"
+Files/$adb shell "rm /system/xbin/busybox"
+Files/$adb shell "rm /system/bin/busybox"
 Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
-Files/$adb reboot
+# Clean up after ourselves
+echo "[*] Cleaning up..."
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "rm /data/local.prop"
 
-echo Finished UnRooting!!!
+echo "[*] Rebooting one last time..."
+$adb reboot
+
+$adb wait-for-device
+echo "[*] Unroot complete, enjoy!"
+
+$adb kill-server
+
+echo "[*] Device found"
+
+echo "[*] Finished UnRooting!!!"
 
 end
 }
@@ -327,82 +388,152 @@ end
 
 function stock {
 header "$menu5" 
-echo "Stock Recovery for the $phone"
-echo Tool Built by $dev
-echo Exploit Built by the Revolutionary Team
-echo
-echo
-echo
-echo Stock Recovery
+echo "[*] LG Esteem root script v2 ($version version)"
+echo "[*] Copyright (c) 2012 Dan Rosenberg (@djrbliss)"
+echo "[*]"
+echo "[*] RZR $rzrver built by PlayfulGod"
+echo "[*] RZR Install by PlayfulGod"
+echo "[*] Copyright (c) 2012 PlayfulGod"
+echo "[*]"
+echo "[*] Root the LG Esteem, ZVB or ZVC and Installs RZR $rzrver"
+echo "[*]"
+echo "[*] Before continuing, ensure USB debugging is enabled and that your"
+echo "[*] phone is connected via USB."
+echo "[*]"
+echo "[*] Press enter to root your phone and install CWM..."
 
-killserver
-startserver
+read -n 1 -s
 
-echo Device found
+echo "[*]"
 
-echo Pushing Zergrush
-Files/$adb push Files/zergrush /data/local/tmp/zergrush
-Files/$adb push Files/$sdir/stockrecovery.img /data/local/tmp/stockrecovery.img
-Files/$adb shell "chmod 755 /data/local/tmp/zergrush"
+echo "[*] Waiting for device..."
+Files/$adb kill-server
+Files/$adb wait-for-device
 
-echo Running Zergrush
-Files/$adb shell "echo exit | /data/local/tmp/zergrush"
+echo "[*] Device found."
 
-echo Removing Trash and UnRooting
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/system /system"
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/data /data"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
-echo Installing Stock Recovery
-Files/$adb shell /data/local/tmp/sh -c "dd if=/dev/block/mmcblk0p14 of=/sdcard/mmcblk0p14.backup bs=4096"
-Files/$adb shell /data/local/tmp/sh -c "dd if=/data/local/tmp/stockrecovery.img of=/dev/block/mmcblk0p14 bs=4096"
+echo "[*] Rebooting..."
 Files/$adb reboot
+echo "[*] Waiting for reboot..."
+Files/$adb wait-for-device
 
-echo Stock Recovery!!!
+Files/$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+
+echo "[*] Rebooting again..."
+Files/$adb reboot
+echo "[*] Waiting for reboot..."
+Files/$adb wait-for-device
+
+# Install the goods
+echo "[*] Installing root tools... "
+Files/$adb remount
+Files/$adb push Files/su /system/bin/su
+Files/$adb shell "chmod 6755 /system/bin/su"
+Files/$adb shell "ln -s /system/bin/su /system/xbin/su"
+Files/$adb push Files/Superuser.apk /system/app/Superuser.apk
+Files/$adb push Files/busybox /system/xbin/busybox
+Files/$adb shell "chmod 755 /system/xbin/busybox"
+Files/$adb shell "/system/xbin/busybox --install /system/xbin"
+
+echo
+echo "[*] Pushing Stock Recovery to Phone"
+echo
+Files/$adb push Files/$sdir/stockrecovery.img /data/local/tmp/stockrecovery.img
+echo
+echo "[*] Installing Stock Recovery"
+echo
+Files/$adb shell "dd if=/data/local/tmp/stockrecovery.img of=/dev/block/mmcblk0p14 bs=4096" 
+Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
+
+# Clean up after ourselves
+echo "[*] Cleaning up..."
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "rm /data/local.prop"
+
+echo "[*] Rebooting one last time..."
+$adb reboot
+
+$adb wait-for-device
+echo "[*] Root complete!!!"
+echo
+echo "[*] Finished Installing Stock Recovery!!!"
+echo
+echo "[*] Enjoy!"
+Files/$adb reboot
 
 end
 }
 
-
-
 function unrootstock {
 header "$menu6" 
-echo UnRooting the $phone
-echo Tool Built by $dev
-echo Exploit Built by the Revolutionary Team
+echo "[*] UnRooting the $phone"
+echo "[*]Tool Built by $dev"
 echo
-echo
-echo
-echo UnRooting
+echo "[*] LG Esteem root script v2 ($version version)"
+echo "[*] Copyright (c) 2012 Dan Rosenberg (@djrbliss)"
+echo "[*]"
 
-killserver
-startserver
 
-echo Device found
+echo "[*] Waiting for device..."
+$adb kill-server
+$adb wait-for-device
 
-echo Pushing Zergrush
-Files/$adb push Files/zergrush /data/local/tmp/zergrush
-Files/$adb push Files/$sdir/stockrecovery.img /data/local/tmp/stockrecovery.img
-Files/$adb shell "chmod 755 /data/local/tmp/zergrush"
+echo "[*] Device found."
 
-echo Running Zergrush
-Files/$adb shell "echo exit | /data/local/tmp/zergrush"
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
-echo Removing Trash and UnRooting
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/system /system"
-Files/$adb shell /data/local/tmp/sh -c "mount -orw,remount /dev/block/data /data"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/bin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/su"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/app/Superuser.apk"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/xbin/busybox"
-Files/$adb shell /data/local/tmp/sh -c "rm /system/bin/busybox"
+echo "[*] Rebooting..."
+$adb reboot
+echo "[*] Waiting for reboot..."
+$adb wait-for-device
 
-echo Installing Stock Recovery
-Files/$adb shell /data/local/tmp/sh -c "dd if=/dev/block/mmcblk0p14 of=/sdcard/mmcblk0p14.backup bs=4096"
-Files/$adb shell /data/local/tmp/sh -c "dd if=/data/local/tmp/stockrecovery.img of=/dev/block/mmcblk0p14 bs=4096"
+$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+
+echo "[*] Rebooting again..."
+$adb reboot
+echo "[*] Waiting for reboot..."
+$adb wait-for-device
+
+# Remove Root Tools
+echo "[*] UnRooting"
+Files/$adb remount
+Files/$adb shell "rm /system/bin/su"
+Files/$adb shell "rm /system/xbin/su"
+Files/$adb shell "rm /system/app/Superuser.apk"
+Files/$adb shell "rm /system/xbin/busybox"
+Files/$adb shell "rm /system/bin/busybox"
 Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
-Files/$adb reboot
 
-echo Finished UnRooting!!!
+echo
+echo "[*] Pushing Stock Recovery to Phone"
+echo
+Files/$adb push Files/$sdir/stockrecovery.img /data/local/tmp/stockrecovery.img
+echo
+echo "[*] Installing Stock Recovery"
+echo
+Files/$adb shell "dd if=/data/local/tmp/stockrecovery.img of=/dev/block/mmcblk0p14 bs=4096" 
+Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
+
+# Clean up after ourselves
+echo "[*] Cleaning up..."
+$adb shell "rm /data/bootlogo/bootlogopid"
+$adb shell "rm /data/local.prop"
+
+echo "[*] Rebooting one last time..."
+$adb reboot
+
+$adb wait-for-device
+echo "[*] Unroot complete, enjoy!"
+
+$adb kill-server
+
+echo "[*] Device found"
+
+echo "[*] Finished UnRooting!!!"
 
 end
 }
@@ -537,21 +668,6 @@ else
 	echo
 	echo THIS SCRIPT IS FOR THE LG ESTEEM and REVOLUTION
 	echo MODELS MS910 and VS910 ONLY
-	echo SCRIPT WILL NOW ABORT
-	echo
-	exit
-fi
-}
-
-function checkswversion {
-echo Checking current software version...
-swver=$($adb shell getprop ro.build.version.incremental | tr -d '\r\n[:blank:]')
-echo;echo Software Version is Detected as $swver;echo
-if [ "$swver" == "ZVC.421C2767" ]; then
-	echo
-	echo THIS SCRIPT IS FOR THE LG ESTEEM MS910
-	echo WITH SW VERSION ZVB ONLY!
-	echo WILL NOT WORK WITH ZVC!!!
 	echo SCRIPT WILL NOW ABORT
 	echo
 	exit
