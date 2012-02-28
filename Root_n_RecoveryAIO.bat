@@ -2,11 +2,10 @@
 color 3
 set cred=@djrbliss, DRockstar, koush, Raidzero, thecubed, and firon
 set dev=PlayfulGod and mtmichaelson
-set phone=LG Esteem & Revolution
+set phone=LG Esteem
 set cwmver=5.5.0.4
 set rzver=2.1.4-esteem
-:CHECKMODEL
-CLS
+
 :MENU
 CLS
 echo ======================================================================
@@ -160,7 +159,7 @@ Files\adb shell "/system/xbin/busybox --install /system/xbin"
 echo.
 echo [*] Pushing CWM to Phone
 echo.
-Files\$adb push Files\$sdir\cwmrecovery.img /data/local/tmp/cwmrecovery.img
+Files\adb push Files\MS910\cwmrecovery.img /data/local/tmp/cwmrecovery.img
 echo.
 echo [*] Installing CWM Recovery
 echo.
@@ -172,6 +171,7 @@ echo.
 echo [*] Finished Installing Clockworkmod Recovery!!!
 echo.
 Files\adb reboot
+Files\adb wait-for-device
 
 :: Clean up after ourselves
 echo [*] Cleaning up...
@@ -239,11 +239,11 @@ Files\adb shell "/system/xbin/busybox --install /system/xbin"
 echo.
 echo [*] Pushing RZR to Phone
 echo.
-Files\adb push Files\$sdir\rzrecovery.img /data/local/tmp/rzrecovery.img
+Files\adb push Files\MS910\rzrecovery.img /data/local/tmp/rzrecovery.img
 echo.
 echo [*] Installing RZ Recovery
 echo.
-Files\adb shell "dd if=/data/local/tmp/rxrecovery.img of=/dev/block/mmcblk0p14 bs=4096" 
+Files\adb shell "dd if=/data/local/tmp/rzrecovery.img of=/dev/block/mmcblk0p14 bs=4096" 
 Files\adb shell "rm /data/local/tmp/* 2>/dev/null"
 
 echo [*] Root complete!!!
@@ -269,7 +269,7 @@ GOTO MENU
 
 :UNROOT
 CLS
-echo [*] UnRooting the $phone
+echo [*] UnRooting the %phone%
 echo [*]Tool Built by %dev%
 echo.
 echo [*] LG Esteem root script v2 (Windows version)
@@ -283,7 +283,7 @@ Files\adb wait-for-device
 
 echo [*] Device found.
 
-$adb shell "rm /data/bootlogo/bootlogopid"
+Files\adb shell "rm /data/bootlogo/bootlogopid"
 Files\adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
 echo [*] Rebooting...
@@ -382,7 +382,7 @@ Files\adb shell "/system/xbin/busybox --install /system/xbin"
 echo.
 echo [*] Pushing Stock Recovery to Phone
 echo.
-Files\adb push Files\$sdir\stockrecovery.img /data/local/tmp/stockrecovery.img
+Files\adb push Files\MS910\stockrecovery.img /data/local/tmp/stockrecovery.img
 echo.
 echo [*] Installing Stock Recovery
 echo.
@@ -453,7 +453,7 @@ Files\adb shell "rm /data/local/tmp/* 2>/dev/null"
 echo.
 echo [*] Pushing Stock Recovery to Phone
 echo.
-Files\adb push Files\$sdir\stockrecovery.img /data/local/tmp/stockrecovery.img
+Files\adb push Files\MS910\stockrecovery.img /data/local/tmp/stockrecovery.img
 echo.
 echo [*] Installing Stock Recovery
 echo.
@@ -499,9 +499,9 @@ echo Recovery!!!
 pause
 GOTO MENU
 
-:CHECKMODEL
+:checkmodel
 echo Checking Current Phone Build...
-FOR /F "tokens=*" %%i in ('adb shell getprop ro.product.device') do SET model=%%i
+FOR /F "tokens=*" %%i in ('Files\adb shell getprop ro.product.device') do SET model=%%i
 echo.
 echo Phone Model is Detected as %model%
 echo.

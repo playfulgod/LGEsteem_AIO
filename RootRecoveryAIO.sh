@@ -33,11 +33,11 @@ else
         adb="Files/./adb"
         version="Linux"
 fi
-chmod +x $adb
+chmod +x adb
 
 which adb > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-        adb="adb"
+        adb="Files/adb"
 fi
 # End section, thanks Firon!
 
@@ -108,49 +108,49 @@ read -n 1 -s
 echo "[*]"
 
 echo "[*] Waiting for device..."
-$adb kill-server
-$adb wait-for-device
+Files/$adb kill-server
+Files/$adb wait-for-device
 
 echo "[*] Device found."
 
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "ln -s /data /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
 echo "[*] Rebooting..."
-$adb reboot
+Files/$adb reboot
 echo "[*] Waiting for reboot..."
-$adb wait-for-device
+Files/$adb wait-for-device
 
-$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+Files/$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
 
 echo "[*] Rebooting again..."
-$adb reboot
+Files/$adb reboot
 echo "[*] Waiting for reboot..."
-$adb wait-for-device
+Files/$adb wait-for-device
 
 # Install the goods
 echo "[*] Installing root tools... "
-$adb remount
-$adb push su /system/bin/su
-$adb shell "chmod 6755 /system/bin/su"
-$adb shell "ln -s /system/bin/su /system/xbin/su"
-$adb push Files/Superuser.apk /system/app/Superuser.apk
-$adb push Files/busybox /system/xbin/busybox
-$adb shell "chmod 755 /system/xbin/busybox"
-$adb shell "/system/xbin/busybox --install /system/xbin"
+Files/$adb remount
+Files/$adb push su /system/bin/su
+Files/$adb shell "chmod 6755 /system/bin/su"
+Files/$adb shell "ln -s /system/bin/su /system/xbin/su"
+Files/$adb push Files/Superuser.apk /system/app/Superuser.apk
+Files/$adb push Files/busybox /system/xbin/busybox
+Files/$adb shell "chmod 755 /system/xbin/busybox"
+Files/$adb shell "/system/xbin/busybox --install /system/xbin"
 
 # Clean up after ourselves
 echo "[*] Cleaning up..."
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "rm /data/local.prop"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/local.prop"
 
 echo "[*] Rebooting one last time..."
-$adb reboot
+Files/$adb reboot
 
-$adb wait-for-device
+Files/$adb wait-for-device
 echo "[*] Root complete, enjoy!"
 
-$adb kill-server
+Files/$adb kill-server
 
 echo Finished Rooting!!!
 
@@ -223,13 +223,13 @@ Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
 # Clean up after ourselves
 echo "[*] Cleaning up..."
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "rm /data/local.prop"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/local.prop"
 
 echo "[*] Rebooting one last time..."
-$adb reboot
+Files/$adb reboot
 
-$adb wait-for-device
+Files/$adb wait-for-device
 echo "[*] Root complete!!!"
 echo
 echo "[*] Finished Installing Clockworkmod Recovery!!!"
@@ -305,13 +305,13 @@ Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
 # Clean up after ourselves
 echo "[*] Cleaning up..."
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "rm /data/local.prop"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/local.prop"
 
 echo "[*] Rebooting one last time..."
-$adb reboot
+Files/$adb reboot
 
-$adb wait-for-device
+Files/$adb wait-for-device
 echo "[*] Root complete!!!"
 echo
 echo "[*] Finished Installing RZ Recovery!!!"
@@ -335,25 +335,25 @@ echo "[*]"
 
 
 echo "[*] Waiting for device..."
-$adb kill-server
-$adb wait-for-device
+Files/$adb kill-server
+Files/$adb wait-for-device
 
 echo "[*] Device found."
 
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "ln -s /data /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
 echo "[*] Rebooting..."
-$adb reboot
+Files/$adb reboot
 echo "[*] Waiting for reboot..."
-$adb wait-for-device
+Files/$adb wait-for-device
 
-$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+Files/$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
 
 echo "[*] Rebooting again..."
-$adb reboot
+Files/$adb reboot
 echo "[*] Waiting for reboot..."
-$adb wait-for-device
+Files/$adb wait-for-device
 
 # Remove Root Tools
 echo "[*] UnRooting"
@@ -367,16 +367,16 @@ Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
 # Clean up after ourselves
 echo "[*] Cleaning up..."
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "rm /data/local.prop"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/local.prop"
 
 echo "[*] Rebooting one last time..."
-$adb reboot
+Files/$adb reboot
 
-$adb wait-for-device
+Files/$adb wait-for-device
 echo "[*] Unroot complete, enjoy!"
 
-$adb kill-server
+Files/$adb kill-server
 
 echo "[*] Device found"
 
@@ -450,13 +450,13 @@ Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
 # Clean up after ourselves
 echo "[*] Cleaning up..."
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "rm /data/local.prop"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/local.prop"
 
 echo "[*] Rebooting one last time..."
-$adb reboot
+Files/$adb reboot
 
-$adb wait-for-device
+Files/$adb wait-for-device
 echo "[*] Root complete!!!"
 echo
 echo "[*] Finished Installing Stock Recovery!!!"
@@ -478,25 +478,25 @@ echo "[*]"
 
 
 echo "[*] Waiting for device..."
-$adb kill-server
-$adb wait-for-device
+Files/$adb kill-server
+Files/$adb wait-for-device
 
 echo "[*] Device found."
 
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "ln -s /data /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "ln -s /data /data/bootlogo/bootlogopid"
 
 echo "[*] Rebooting..."
-$adb reboot
+Files/$adb reboot
 echo "[*] Waiting for reboot..."
-$adb wait-for-device
+Files/$adb wait-for-device
 
-$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
+Files/$adb shell "echo 'ro.kernel.qemu=1' > /data/local.prop"
 
 echo "[*] Rebooting again..."
-$adb reboot
+Files/$adb reboot
 echo "[*] Waiting for reboot..."
-$adb wait-for-device
+Files/$adb wait-for-device
 
 # Remove Root Tools
 echo "[*] UnRooting"
@@ -520,16 +520,16 @@ Files/$adb shell "rm /data/local/tmp/* 2>/dev/null"
 
 # Clean up after ourselves
 echo "[*] Cleaning up..."
-$adb shell "rm /data/bootlogo/bootlogopid"
-$adb shell "rm /data/local.prop"
+Files/$adb shell "rm /data/bootlogo/bootlogopid"
+Files/$adb shell "rm /data/local.prop"
 
 echo "[*] Rebooting one last time..."
-$adb reboot
+Files/$adb reboot
 
-$adb wait-for-device
+Files/$adb wait-for-device
 echo "[*] Unroot complete, enjoy!"
 
-$adb kill-server
+Files/$adb kill-server
 
 echo "[*] Device found"
 
@@ -609,9 +609,9 @@ exit
 function startserver {
 killserver
 if [ -z $(which sudo 2>/dev/null) ]; then
-$adb start-server
+Files/$adb start-server
 else
-sudo $adb start-server
+sudo Files/$adb start-server
 fi
 connect
 }
@@ -658,7 +658,7 @@ echo
 
 function checkmodel {
 echo Checking current phone model...
-model=$($adb shell getprop ro.product.device | tr -d '\r\n[:blank:]')
+model=(Files/$adb shell getprop ro.product.device | tr -d '\r\n[:blank:]')
 echo;echo Phone Model is Detected as $model;echo
 if [ "$model" == "MS910" ]; then
 	sdir="MS910"
